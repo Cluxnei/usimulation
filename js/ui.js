@@ -6,6 +6,7 @@ export class Ui {
 
     update() {
         this.simulationBufferFillPercentage = this.simulation.getBufferFillPercentage();
+        this.simulationChunks = this.simulation.universe.chunkController.chunks.length;
     }
 
     render() {
@@ -15,6 +16,7 @@ export class Ui {
     buildHtml() {
         return `
             Buffer: ${this.percentage(this.simulationBufferFillPercentage)}%<br>
+            Chunks: ${this.simulationChunks}<br>
         `;
     }
 
