@@ -19,19 +19,38 @@ class Chunk {
     }
 
     computeCenterOfMass() {
-        this.centerOfMass = this.getCenterOfMass();
-        return this.centerOfMass;
+        const {position, mass} = this.getCenterOfMass();
+        this.centerOfMassPosition = position;
+        this.centerOfMassMass = mass;
+        return {position, mass};
     }
 
     // (m1 * x1 + m2 * x2 + ...) / (m1 + m2 + ...) = center of mass position X
     getCenterOfMass() {
+        if (this.planets.length === 0) {
+            return {
+                position: new Vector2(),
+                mass: 0,
+            };
+        }
+        if (this.planets.length === 1) {
+            return {
+                position: this.planets[0].position.copy(),
+                mass: this.planets[0].mass,
+            };
+        }
         const accumulatedMassPositionX = this.planets.reduce((acc, p) => acc + p.mass * p.position.x, 0);
         const accumulatedMassPositionY = this.planets.reduce((acc, p) => acc + p.mass * p.position.y, 0);
         const accumulatedMass = this.planets.reduce((acc, p) => acc + p.mass, 0);
-        return new Vector2(
+
+        const position = new Vector2(
             accumulatedMassPositionX / accumulatedMass,
             accumulatedMassPositionY / accumulatedMass
         );
+        return {
+            position,
+            mass: accumulatedMass,
+        }
     }
 
 
