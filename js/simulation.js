@@ -97,7 +97,7 @@ export class Simulation {
     }
 
     renderCentersOfMass(chunksCentersOfMass, ctx) {
-        ctx.fillStyle = '#fff200';
+        ctx.fillStyle = 'rgba(240,255,0,0.5)';
         chunksCentersOfMass.forEach(centerOfMass => {
             this.renderArc(centerOfMass, 3, ctx);
         });

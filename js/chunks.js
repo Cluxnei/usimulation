@@ -29,7 +29,7 @@ class Chunk {
     getCenterOfMass() {
         if (this.planets.length === 0) {
             return {
-                position: new Vector2(),
+                position: this.position.copy().add(this.chunkSize.copy().scale(0.5)),
                 mass: 0,
             };
         }
@@ -52,7 +52,6 @@ class Chunk {
             mass: accumulatedMass,
         }
     }
-
 
 }
 
