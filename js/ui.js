@@ -1,9 +1,11 @@
+
 export class Ui {
     constructor(simulation, canvas, ctx) {
         this.simulation = simulation;
         this.canvas = canvas;
         this.ctx = ctx;
         this.element = document.getElementById('ui');
+        this.lastClickTime = Date.now();
         this.canvas.addEventListener('click', () => {
             this.handleClick();
         });
@@ -32,10 +34,19 @@ export class Ui {
     }
 
     handleClick() {
+        const now = Date.now();
+        if (now - this.lastClickTime < 200) {
+            this.zoomIn();
+        }
         this.highlightChunk(this.canvas.mousePositionInCanvas);
+        this.lastClickTime = Date.now();
     }
 
     highlightChunk(position) {
         this.simulation.highlightChunkAt(position);
+    }
+
+    zoomIn() {
+        this.canvas.dispatchEvent(new WheelEvent('wheel', {deltaY: -300}));
     }
 }
