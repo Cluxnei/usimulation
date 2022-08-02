@@ -15,9 +15,17 @@ export class Ui {
         this.simulationBufferFillPercentage = this.simulation.getBufferFillPercentage();
         this.simulationChunks = this.simulation.universe.chunkController.chunks.length;
         this.canvasZoom = this.fixed(this.canvas.zoom);
-        this.mousePosition = this.canvas.mousePositionInCanvas;
-        this.mousePosition.x = this.fixed(this.mousePosition.x);
-        this.mousePosition.y = this.fixed(this.mousePosition.y);
+        this.mousePosition = this.canvas.mousePositionInCanvas.copy();
+        const chunkController = this.simulation.universe.chunkController;
+        const currentHighlightedChunk = chunkController.currentHighlightedChunk;
+        this.selectedChunkPlanets = currentHighlightedChunk?.planets?.length;
+        this.selectedChunkPlanets = this.selectedChunkPlanets ? this.selectedChunkPlanets : '-';
+        this.selectedChunkCenterOfMassPosition = currentHighlightedChunk?.centerOfMassPosition?.copy();
+        this.selectedChunkCenterOfMassMass = this.fixed(currentHighlightedChunk?.centerOfMassMass);
+    }
+
+    vector2ToString(vector) {
+        return vector ? `[${this.fixed(vector.x)}, ${this.fixed(vector.y)}]` : '-';
     }
 
     render() {
@@ -26,10 +34,25 @@ export class Ui {
 
     buildHtml() {
         return `
-            Buffer: ${this.percentage(this.simulationBufferFillPercentage)}%<br>
-            Chunks: ${this.simulationChunks}<br>
-            Zoom: ${this.canvasZoom}<br>
-            Mouse: [${this.mousePosition.x}, ${this.mousePosition.y}]<br>
+            <ul>
+                <li>
+                    General
+                    <ul>
+                        <li>Buffer: ${this.percentage(this.simulationBufferFillPercentage)}%</li>
+                        <li>Chunks: ${this.simulationChunks}</li>
+                        <li>Zoom: ${this.canvasZoom}</li>
+                        <li>Mouse: ${this.vector2ToString(this.mousePosition)}</li>
+                    </ul>
+                </li>
+                <li>
+                    Selected Chunk
+                    <ul>
+                        <li>Planets: ${this.selectedChunkPlanets}</li>   
+                        <li>Center of mass: ${this.vector2ToString(this.selectedChunkCenterOfMassPosition)}</li>
+                        <li>Center of mass: ${this.selectedChunkCenterOfMassMass}</li>
+                    </ul>
+                </li>
+            </ul>
         `;
     }
 
@@ -47,7 +70,7 @@ export class Ui {
             this.zoomIn();
         }
         this.highlightChunk(this.canvas.mousePositionInCanvas);
-        this.lastClickTime = Date.now();
+        this.lastClickTime = now;
     }
 
     highlightChunk(position) {

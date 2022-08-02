@@ -106,6 +106,7 @@ export class ChunkController {
 
     highlightChunk(chunk) {
         this.highlightedChunkLimits = chunk ? chunk.getLimits() : null;
+        this.currentHighlightedChunk = chunk;
     }
 
     generatePlanets() {
