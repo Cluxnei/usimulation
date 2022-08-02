@@ -37,4 +37,33 @@ export class Vector2 {
         this.y /= magnitude;
         return this;
     }
+
+    rotate(angle) {
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        const x = this.x;
+        const y = this.y;
+        this.x = x * cos - y * sin;
+        this.y = x * sin + y * cos;
+        return this;
+    }
+
+    rotateAround(angle, center) {
+        this.sub(center);
+        this.rotate(angle);
+        this.add(center);
+        return this;
+    }
+
+    map(callback) {
+        this.x = callback(this.x);
+        this.y = callback(this.y);
+        return this;
+    }
+
+    reduce(callback, initialValue) {
+        let result = initialValue;
+        this.map(value => result = callback(result, value));
+        return result;
+    }
 }

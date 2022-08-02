@@ -14,7 +14,10 @@ export class Ui {
     update() {
         this.simulationBufferFillPercentage = this.simulation.getBufferFillPercentage();
         this.simulationChunks = this.simulation.universe.chunkController.chunks.length;
-        this.canvasZoom = this.canvas.zoom;
+        this.canvasZoom = this.fixed(this.canvas.zoom);
+        this.mousePosition = this.canvas.mousePositionInCanvas;
+        this.mousePosition.x = this.fixed(this.mousePosition.x);
+        this.mousePosition.y = this.fixed(this.mousePosition.y);
     }
 
     render() {
@@ -26,11 +29,16 @@ export class Ui {
             Buffer: ${this.percentage(this.simulationBufferFillPercentage)}%<br>
             Chunks: ${this.simulationChunks}<br>
             Zoom: ${this.canvasZoom}<br>
+            Mouse: [${this.mousePosition.x}, ${this.mousePosition.y}]<br>
         `;
     }
 
     percentage(percentage) {
         return percentage < 100 ? `0${percentage}` : percentage;
+    }
+
+    fixed(number) {
+        return typeof number === 'number' ? number.toFixed(2) : '-';
     }
 
     handleClick() {
