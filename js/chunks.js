@@ -6,6 +6,7 @@ class Chunk {
     constructor(chunkSize, position) {
         this.chunkSize = chunkSize;
         this.position = position;
+        this.planets = [];
     }
 
     getLimits() {
@@ -16,12 +17,17 @@ class Chunk {
             right: this.position.x + this.chunkSize.x,
         }
     }
+
+
 }
 
 export class ChunkController {
 
-    constructor() {
+    constructor(planetGenerator, planetsCount) {
         this.chunks = [];
+        this.planets = [];
+        this.planetGenerator = planetGenerator;
+        this.planetsCount = planetsCount;
     }
 
     getChunksLimits() {
@@ -66,5 +72,18 @@ export class ChunkController {
 
     highlightChunk(chunk) {
         this.highlightedChunkLimits = chunk ? chunk.getLimits() : null;
+    }
+
+    generatePlanets() {
+        for (let i = 0; i < this.planetsCount; i++) {
+            this.planets.push(this.planetGenerator.generatePlanet());
+        }
+    }
+
+    associatePlanetsWithChunks() {
+        this.planets.forEach(planet => {
+            const chunk = this.getChunkAt(planet.position);
+            chunk.planets.push(planet);
+        });
     }
 }

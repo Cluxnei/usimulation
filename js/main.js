@@ -1,22 +1,41 @@
 import {initCanvas, updateCanvas} from './canvas.js';
-import {FIXED_DT, SIMULATION_BUFFER_SIZE, UNIVERSE_SIZE_SCREEN_MULTIPLIER} from './constants.js';
+import {
+    FIXED_DT,
+    INITIAL_PLANETS_COUNT, MAX_PLANET_RADIUS,
+    MIN_PLANET_RADIUS,
+    SIMULATION_BUFFER_SIZE,
+    UNIVERSE_SIZE_SCREEN_MULTIPLIER
+} from './constants.js';
 import {Universe} from './universes.js';
 import {Vector2} from './vectors.js';
 import {ChunkController} from './chunks.js';
 import {Simulation} from './simulation.js';
 import {Ui} from './ui.js';
 import {delay} from './helpers.js';
+import {PlanetGenerator} from './planets.js';
 
 const start = () => {
     const canvas = initCanvas();
     const ctx = canvas.getContext('2d');
 
-    const chunkController = new ChunkController();
-
     const universeSize = new Vector2(
         canvas.width * UNIVERSE_SIZE_SCREEN_MULTIPLIER,
         canvas.height * UNIVERSE_SIZE_SCREEN_MULTIPLIER
     );
+
+    const planetGenerator = new PlanetGenerator();
+    planetGenerator.setRadiusRange(MIN_PLANET_RADIUS, MAX_PLANET_RADIUS);
+
+    planetGenerator.setPositionRange(
+        new Vector2(-universeSize.x, universeSize.x),
+        new Vector2(-universeSize.y, universeSize.y)
+    );
+
+    const chunkController = new ChunkController(
+        planetGenerator,
+        INITIAL_PLANETS_COUNT
+    );
+
     const universe = new Universe(
         universeSize,
         chunkController
@@ -51,7 +70,7 @@ const start = () => {
         console.log('render loop started');
     });
     // Start the ui loop
-    uiLoop(500).then(() => {
+    uiLoop(300).then(() => {
         console.log('ui loop started');
     });
 

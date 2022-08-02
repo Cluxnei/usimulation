@@ -54,6 +54,7 @@ export class Simulation {
             this.renderLimits(limits, ctx);
         });
         this.renderHighlights(state.highlights, ctx);
+        this.renderPlanets(state.planets, ctx);
     }
 
     renderLimits(limits, ctx) {
@@ -79,5 +80,18 @@ export class Simulation {
                 highlights.highlightedChunkLimits.bottom - highlights.highlightedChunkLimits.top
             );
         }
+    }
+
+    renderPlanets(planets, ctx) {
+        planets.forEach(planet => {
+            this.renderPlanet(planet, ctx);
+        });
+    }
+
+    renderPlanet(planet, ctx) {
+        ctx.fillStyle = planet.color;
+        ctx.beginPath();
+        ctx.arc(planet.position.x, planet.position.y, planet.radius, 0, 2 * Math.PI);
+        ctx.fill();
     }
 }

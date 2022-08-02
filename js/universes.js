@@ -4,16 +4,18 @@ export class Universe {
         this.chunkController = chunkController;
         this.chunkController.setUniverse(this);
         this.chunkController.generateChunks();
+        this.chunkController.generatePlanets();
+        this.chunkController.associatePlanetsWithChunks();
     }
 
     getState() {
         return {
-            text: 'Hello World',
             limits: this.getLimitEdges(),
             chunksLimits: this.chunkController.getChunksLimits(),
             highlights: {
                 highlightedChunkLimits: this.chunkController.highlightedChunkLimits || null
             },
+            planets: this.chunkController.planets.map(planet => planet.getState()),
         };
     }
 
