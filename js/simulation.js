@@ -55,6 +55,7 @@ export class Simulation {
         });
         this.renderHighlights(state.highlights, ctx);
         this.renderPlanets(state.planets, ctx);
+        this.renderCentersOfMass(state.chunksCentersOfMass, ctx);
     }
 
     renderLimits(limits, ctx) {
@@ -84,14 +85,21 @@ export class Simulation {
 
     renderPlanets(planets, ctx) {
         planets.forEach(planet => {
-            this.renderPlanet(planet, ctx);
+            ctx.fillStyle = planet.color;
+            this.renderArc(planet.position, planet.radius, ctx);
         });
     }
 
-    renderPlanet(planet, ctx) {
-        ctx.fillStyle = planet.color;
+    renderArc(position, radius, ctx) {
         ctx.beginPath();
-        ctx.arc(planet.position.x, planet.position.y, planet.radius, 0, 2 * Math.PI);
+        ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI);
         ctx.fill();
+    }
+
+    renderCentersOfMass(chunksCentersOfMass, ctx) {
+        ctx.fillStyle = '#fff200';
+        chunksCentersOfMass.forEach(centerOfMass => {
+            this.renderArc(centerOfMass, 3, ctx);
+        });
     }
 }

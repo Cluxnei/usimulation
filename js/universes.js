@@ -16,6 +16,7 @@ export class Universe {
                 highlightedChunkLimits: this.chunkController.highlightedChunkLimits || null
             },
             planets: this.chunkController.planets.map(planet => planet.getState()),
+            chunksCentersOfMass: this.chunkController.chunks.map(chunk => chunk.centerOfMass).filter(v => v),
         };
     }
 

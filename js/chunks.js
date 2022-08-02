@@ -18,6 +18,22 @@ class Chunk {
         }
     }
 
+    computeCenterOfMass() {
+        this.centerOfMass = this.getCenterOfMass();
+        return this.centerOfMass;
+    }
+
+    // (m1 * x1 + m2 * x2 + ...) / (m1 + m2 + ...) = center of mass position X
+    getCenterOfMass() {
+        const accumulatedMassPositionX = this.planets.reduce((acc, p) => acc + p.mass * p.position.x, 0);
+        const accumulatedMassPositionY = this.planets.reduce((acc, p) => acc + p.mass * p.position.y, 0);
+        const accumulatedMass = this.planets.reduce((acc, p) => acc + p.mass, 0);
+        return new Vector2(
+            accumulatedMassPositionX / accumulatedMass,
+            accumulatedMassPositionY / accumulatedMass
+        );
+    }
+
 
 }
 
@@ -85,5 +101,10 @@ export class ChunkController {
             const chunk = this.getChunkAt(planet.position);
             chunk.planets.push(planet);
         });
+        this.computeCenterOfMass();
+    }
+
+    computeCenterOfMass() {
+        this.chunks.forEach(chunk => chunk.computeCenterOfMass());
     }
 }
