@@ -1,4 +1,5 @@
 import {BACKGROUND_COLOR} from './constants.js';
+import {Vector2} from './vectors.js';
 
 export const initCanvas = () => {
     const canvas = document.querySelector('#canvas');
@@ -6,14 +7,25 @@ export const initCanvas = () => {
     canvas.positionX = 0;
     canvas.positionY = 0;
 
+    canvas.mousePositionInCanvas = new Vector2(0, 0);
+
+    const handleMouseMove = (event) => {
+        canvas.mousePositionInCanvas.x = -(
+            (canvas.positionX || 0) - event.offsetX + canvas.clientWidth / 2
+        ) / canvas.zoom;
+        canvas.mousePositionInCanvas.y = -(
+            (canvas.positionY || 0) - event.offsetY + canvas.clientHeight / 2
+        ) / canvas.zoom;
+    };
 
     canvas.addEventListener('mousemove', event => {
+        handleMouseMove(event);
         if(!canvas.dragging) {
             return;
         }
         canvas.positionX = (canvas.positionX || 0) + event.movementX;
         canvas.positionY = (canvas.positionY || 0) + event.movementY;
-    })
+    });
 
     canvas.addEventListener('mousedown', () => {
         canvas.dragging = true;

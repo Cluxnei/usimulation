@@ -1,4 +1,4 @@
-class Universe {
+export class Universe {
     constructor(size, chunkController) {
         this.size = size;
         this.chunkController = chunkController;
@@ -11,6 +11,9 @@ class Universe {
             text: 'Hello World',
             limits: this.getLimitEdges(),
             chunksLimits: this.chunkController.getChunksLimits(),
+            highlights: {
+                highlightedChunkLimits: this.chunkController.highlightedChunkLimits || null
+            },
         };
     }
 
@@ -25,11 +28,5 @@ class Universe {
             left: -this.size.x,
             right: this.size.x,
         };
-    }
-}
-
-export class FiniteUniverse extends Universe {
-    constructor(size, chunkController) {
-        super(size, chunkController);
     }
 }

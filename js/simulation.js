@@ -17,6 +17,11 @@ export class Simulation {
         return this.buffer.length >= 1;
     }
 
+    highlightChunkAt(position) {
+        const chunk = this.universe.chunkController.getChunkAt(position);
+        this.universe.chunkController.highlightChunk(chunk);
+    }
+
     // update section
 
     update(deltaTime) {
@@ -48,6 +53,7 @@ export class Simulation {
         state.chunksLimits.forEach(limits => {
             this.renderLimits(limits, ctx);
         });
+        this.renderHighlights(state.highlights, ctx);
     }
 
     renderLimits(limits, ctx) {
@@ -63,4 +69,15 @@ export class Simulation {
     }
 
 
+    renderHighlights(highlights, ctx) {
+        if (highlights.highlightedChunkLimits) {
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.15)';
+            ctx.fillRect(
+                highlights.highlightedChunkLimits.left,
+                highlights.highlightedChunkLimits.top,
+                highlights.highlightedChunkLimits.right - highlights.highlightedChunkLimits.left,
+                highlights.highlightedChunkLimits.bottom - highlights.highlightedChunkLimits.top
+            );
+        }
+    }
 }

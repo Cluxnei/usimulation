@@ -1,6 +1,6 @@
 import {initCanvas, updateCanvas} from './canvas.js';
 import {FIXED_DT, SIMULATION_BUFFER_SIZE, UNIVERSE_SIZE_SCREEN_MULTIPLIER} from './constants.js';
-import {FiniteUniverse} from './universes.js';
+import {Universe} from './universes.js';
 import {Vector2} from './vectors.js';
 import {ChunkController} from './chunks.js';
 import {Simulation} from './simulation.js';
@@ -17,13 +17,13 @@ const start = () => {
         canvas.width * UNIVERSE_SIZE_SCREEN_MULTIPLIER,
         canvas.height * UNIVERSE_SIZE_SCREEN_MULTIPLIER
     );
-    const universe = new FiniteUniverse(
+    const universe = new Universe(
         universeSize,
         chunkController
     );
 
     const simulation = new Simulation(universe, SIMULATION_BUFFER_SIZE);
-    const ui = new Ui(simulation);
+    const ui = new Ui(simulation, canvas, ctx);
 
     const deltaTime = FIXED_DT;
 

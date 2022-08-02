@@ -49,4 +49,22 @@ export class ChunkController {
             }
         }
     }
+
+    getChunkAt(position) {
+        const chunkIndex = this.getChunkIndexAt(position);
+        return this.chunks[chunkIndex];
+    }
+
+    getChunkIndexAt(position) {
+        return this.chunks.findIndex(chunk => (
+            position.x >= chunk.position.x &&
+            position.x < chunk.position.x + chunk.chunkSize.x &&
+            position.y < chunk.position.y &&
+            position.y >= chunk.position.y + chunk.chunkSize.y
+        ));
+    }
+
+    highlightChunk(chunk) {
+        this.highlightedChunkLimits = chunk ? chunk.getLimits() : null;
+    }
 }
