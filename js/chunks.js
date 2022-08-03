@@ -3,7 +3,8 @@ import {Vector2} from './vectors.js';
 
 class Chunk {
 
-    constructor(chunkSize, position) {
+    constructor(_index, chunkSize, position) {
+        this._index = _index;
         this.chunkSize = chunkSize;
         this.position = position;
         this.planets = [];
@@ -53,6 +54,28 @@ class Chunk {
         }
     }
 
+    updatePlanetsPosition(deltaTime) {
+        const limits = this.manager.universe.getLimitEdges();
+        this.planets.forEach(planet => {
+            planet.updatePosition(deltaTime, limits);
+        });
+    }
+
+    hasPlanetsOutsideLimits() {
+        return this.planets.some(planet => {
+            const {position, radius} = planet;
+            const {top, bottom, left, right} = this.getLimits();
+            return position.y + radius > top
+                || position.y - radius < bottom
+                || position.x + radius > right
+                || position.x - radius < left;
+        });
+    }
+
+    setManager(manager) {
+        this.manager = manager;
+    }
+
 }
 
 export class ChunkController {
@@ -79,13 +102,17 @@ export class ChunkController {
             (universeLimits.right - universeLimits.left) / chunksOnAxis,
             (universeLimits.bottom - universeLimits.top) / chunksOnAxis
         );
+        let _index = 0;
         for (let i = 0; i < chunksOnAxis; i++) {
             for (let j = 0; j < chunksOnAxis; j++) {
                 const chunkPosition = new Vector2(
                     universeLimits.left + i * chunkSize.x,
                     universeLimits.top + j * chunkSize.y
                 );
-                this.chunks.push(new Chunk(chunkSize, chunkPosition));
+                const chunk = new Chunk(_index, chunkSize, chunkPosition);
+                chunk.setManager(this);
+                this.chunks.push(chunk);
+                _index++;
             }
         }
     }
@@ -116,14 +143,33 @@ export class ChunkController {
     }
 
     associatePlanetsWithChunks() {
+        this.chunks.forEach(chunk => {
+            chunk.planets = [];
+        });
         this.planets.forEach(planet => {
             const chunk = this.getChunkAt(planet.position);
             chunk.planets.push(planet);
+            console.log('planet added to chunk', chunk._index);
         });
         this.computeCenterOfMass();
     }
 
     computeCenterOfMass() {
-        this.chunks.forEach(chunk => chunk.computeCenterOfMass());
+        this.chunks.forEach(chunk => {
+            chunk.computeCenterOfMass()
+        });
+    }
+
+    update(deltaTime) {
+        this.updateChunks(deltaTime);
+    }
+
+    updateChunks(deltaTime) {
+        this.chunks.forEach(chunk => {
+            chunk.updatePlanetsPosition(deltaTime);
+        });
+        if (this.chunks.some(chunk => chunk.hasPlanetsOutsideLimits())) {
+            this.associatePlanetsWithChunks();
+        }
     }
 }

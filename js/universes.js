@@ -21,7 +21,7 @@ export class Universe {
     }
 
     update(deltaTime) {
-
+        this.chunkController.update(deltaTime);
     }
 
     getLimitEdges() {

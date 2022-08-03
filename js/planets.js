@@ -22,6 +22,22 @@ export class Planet {
         };
     }
 
+    updatePosition(deltaTime, limits) {
+        this.acceleration = this.forces.copy().scale(1 / this.mass);
+        this.velocity.add(this.acceleration.copy().scale(deltaTime));
+        const nextPosition = this.position.copy().add(this.velocity.copy().scale(deltaTime));
+        const isOutsideLimits = nextPosition.x + this.radius > limits.right
+            || nextPosition.x - this.radius < limits.left
+            || nextPosition.y + this.radius > limits.top
+            || nextPosition.y - this.radius < limits.bottom;
+        if (isOutsideLimits) {
+            this.acceleration = new Vector2();
+            this.velocity = new Vector2();
+            return;
+        }
+        this.position = nextPosition;
+    }
+
 }
 
 export class PlanetGenerator {
@@ -35,8 +51,8 @@ export class PlanetGenerator {
             new Vector2(),
         ];
         this.velocityRange = [
-            new Vector2(),
-            new Vector2(),
+            new Vector2(-100, 100),
+            new Vector2(-100, 100),
         ];
     }
 

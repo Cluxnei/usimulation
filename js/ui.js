@@ -19,9 +19,10 @@ export class Ui {
         const chunkController = this.simulation.universe.chunkController;
         const currentHighlightedChunk = chunkController.currentHighlightedChunk;
         this.selectedChunkPlanets = currentHighlightedChunk?.planets?.length;
-        this.selectedChunkPlanets = this.selectedChunkPlanets ? this.selectedChunkPlanets : '-';
+        this.selectedChunkPlanets = this.selectedChunkPlanets ?? '-';
         this.selectedChunkCenterOfMassPosition = currentHighlightedChunk?.centerOfMassPosition?.copy();
         this.selectedChunkCenterOfMassMass = this.fixed(currentHighlightedChunk?.centerOfMassMass);
+        this.selectedChunkIndex = currentHighlightedChunk?._index ?? '';
     }
 
     vector2ToString(vector) {
@@ -38,14 +39,14 @@ export class Ui {
                 <li>
                     General
                     <ul>
-                        <li>Buffer: ${this.percentage(this.simulationBufferFillPercentage)}%</li>
+                        <li>Buffer: ${this.simulationBufferFillPercentage}%</li>
                         <li>Chunks: ${this.simulationChunks}</li>
                         <li>Zoom: ${this.canvasZoom}</li>
                         <li>Mouse: ${this.vector2ToString(this.mousePosition)}</li>
                     </ul>
                 </li>
                 <li>
-                    Selected Chunk
+                    Selected Chunk ${this.selectedChunkIndex}
                     <ul>
                         <li>Planets: ${this.selectedChunkPlanets}</li>   
                         <li>Center of mass: ${this.vector2ToString(this.selectedChunkCenterOfMassPosition)}</li>
@@ -54,10 +55,6 @@ export class Ui {
                 </li>
             </ul>
         `;
-    }
-
-    percentage(percentage) {
-        return percentage < 100 ? `0${percentage}` : percentage;
     }
 
     fixed(number) {
