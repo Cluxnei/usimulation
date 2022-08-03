@@ -63,12 +63,8 @@ class Chunk {
 
     hasPlanetsOutsideLimits() {
         return this.planets.some(planet => {
-            const {position, radius} = planet;
-            const {top, bottom, left, right} = this.getLimits();
-            return position.y + radius > top
-                || position.y - radius < bottom
-                || position.x + radius > right
-                || position.x - radius < left;
+            const chunkLimits = this.getLimits();
+            return planet.isPositionOutsideChunkLimits(null, chunkLimits);
         });
     }
 
@@ -149,7 +145,6 @@ export class ChunkController {
         this.planets.forEach(planet => {
             const chunk = this.getChunkAt(planet.position);
             chunk.planets.push(planet);
-            console.log('planet added to chunk', chunk._index);
         });
         this.computeCenterOfMass();
     }

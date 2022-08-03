@@ -22,15 +22,31 @@ export class Planet {
         };
     }
 
+    isPositionOutsideLimits(position, limits) {
+        if (!position) {
+            position = this.position;
+        }
+        return position.x + this.radius > limits.right
+        || position.x - this.radius < limits.left
+        || position.y + this.radius > limits.top
+        || position.y - this.radius < limits.bottom;
+    }
+
+    isPositionOutsideChunkLimits(position, chunkLimits) {
+        if (!position) {
+            position = this.position;
+        }
+        return position.x < chunkLimits.left
+            || position.x > chunkLimits.right
+            || position.y > chunkLimits.bottom
+            || position.y < chunkLimits.top;
+    }
+
     updatePosition(deltaTime, limits) {
         this.acceleration = this.forces.copy().scale(1 / this.mass);
         this.velocity.add(this.acceleration.copy().scale(deltaTime));
         const nextPosition = this.position.copy().add(this.velocity.copy().scale(deltaTime));
-        const isOutsideLimits = nextPosition.x + this.radius > limits.right
-            || nextPosition.x - this.radius < limits.left
-            || nextPosition.y + this.radius > limits.top
-            || nextPosition.y - this.radius < limits.bottom;
-        if (isOutsideLimits) {
+        if (this.isPositionOutsideLimits(nextPosition, limits)) {
             this.acceleration = new Vector2();
             this.velocity = new Vector2();
             return;
