@@ -1,5 +1,5 @@
 import {Vector2} from './vectors.js';
-import {rand} from './helpers.js';
+import {newtonGravitationLaw, rand} from './helpers.js';
 
 export class Planet {
     constructor(position, velocity, radius, density) {
@@ -52,6 +52,16 @@ export class Planet {
             return;
         }
         this.position = nextPosition;
+    }
+
+    attractionTo(otherPlanet){
+        if(otherPlanet === this) {
+            return new Vector2();
+        }
+        const distanceBetweenPlanets = otherPlanet.position.copy().sub(this.position);
+        const distanceBetweenPlanetsScalar = distanceBetweenPlanets.magnitude();
+        const forceScalar = newtonGravitationLaw(this.mass, otherPlanet.mass,distanceBetweenPlanetsScalar);
+        return distanceBetweenPlanets.normalize().scale(forceScalar);
     }
 
 }

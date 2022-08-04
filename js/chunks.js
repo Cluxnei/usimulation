@@ -1,5 +1,6 @@
 import {CHUNKS_COUNT} from './constants.js';
 import {Vector2} from './vectors.js';
+import {newtonGravitationLaw} from './helpers.js';
 
 class Chunk {
 
@@ -72,6 +73,32 @@ class Chunk {
         this.manager = manager;
     }
 
+    computeInternalForces() {
+        this.planets.forEach(planet => {
+            planet.forces = this.planets.reduce((acc, p) => acc.add(planet.attractionTo(p)), new Vector2());
+        });
+    }
+
+    computeOuterForces() {
+        const force = this.manager.chunks.reduce((acc, chunk) => acc.add(this.attractionTo(chunk)), new Vector2());
+        this.planets.forEach(planet => {
+            planet.forces.add(force);
+        });
+    }
+
+    attractionTo(otherChunk) {
+        if (otherChunk === this || !otherChunk.centerOfMassPosition || !this.centerOfMassPosition) {
+            return new Vector2();
+        }
+        const distanceBetweenChunksCenterOfMass = otherChunk.centerOfMassPosition.copy().sub(this.centerOfMassPosition);
+        const distanceBetweenChunksCenterOfMassScalar = distanceBetweenChunksCenterOfMass.magnitude();
+        const forceScalar = newtonGravitationLaw(
+            this.centerOfMassMass,
+            otherChunk.centerOfMassMass,
+            distanceBetweenChunksCenterOfMassScalar
+        );
+        return distanceBetweenChunksCenterOfMass.normalize().scale(forceScalar);
+    }
 }
 
 export class ChunkController {
@@ -146,7 +173,6 @@ export class ChunkController {
             const chunk = this.getChunkAt(planet.position);
             chunk.planets.push(planet);
         });
-        this.computeCenterOfMass();
     }
 
     computeCenterOfMass() {
@@ -157,10 +183,13 @@ export class ChunkController {
 
     update(deltaTime) {
         this.updateChunks(deltaTime);
+        this.computeCenterOfMass(); // maybe only when call associatePlanetsWithChunks() for better performance
     }
 
     updateChunks(deltaTime) {
         this.chunks.forEach(chunk => {
+            chunk.computeInternalForces();
+            chunk.computeOuterForces();
             chunk.updatePlanetsPosition(deltaTime);
         });
         if (this.chunks.some(chunk => chunk.hasPlanetsOutsideLimits())) {
