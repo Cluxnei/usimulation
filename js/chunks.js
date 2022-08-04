@@ -1,4 +1,4 @@
-import {CHUNKS_COUNT} from './constants.js';
+import {CHUNKS_COUNT, DESTROY_PLANET_MASS, DESTROY_PLANET_RADIUS} from './constants.js';
 import {Vector2} from './vectors.js';
 import {newtonGravitationLaw} from './helpers.js';
 
@@ -193,6 +193,18 @@ export class ChunkController {
             chunk.updatePlanetsPosition(deltaTime);
         });
         if (this.chunks.some(chunk => chunk.hasPlanetsOutsideLimits())) {
+            this.associatePlanetsWithChunks();
+        }
+        this.removeTinyPlanets();
+    }
+
+    removeTinyPlanets() {
+        const planetsLength = this.planets.length;
+        this.planets = this.planets.filter(({mass, radius}) => (
+            mass > DESTROY_PLANET_MASS && radius > DESTROY_PLANET_RADIUS
+        ));
+        if (this.planets.length !== planetsLength) {
+            console.log(`Removed ${planetsLength - this.planets.length} planets`);
             this.associatePlanetsWithChunks();
         }
     }

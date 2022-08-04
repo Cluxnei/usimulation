@@ -16,5 +16,6 @@ export const INITIAL_PLANETS_COUNT = 30;
 export const MIN_PLANET_RADIUS = 1;
 export const MAX_PLANET_RADIUS = 10;
 
-
+export const DESTROY_PLANET_MASS = 0.9;
+export const DESTROY_PLANET_RADIUS = 0.9;
 
