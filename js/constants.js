@@ -7,11 +7,9 @@ export const FIXED_DT = 0.016;
 
 export const SIMULATION_BUFFER_SIZE = 10;
 
-export const CHUNKS_COUNT = 20;
-
-export const UNIVERSE_SIZE_SCREEN_MULTIPLIER = 0.3;
-
-export const INITIAL_PLANETS_COUNT = 30;
+export const UNIVERSE_SIZE_SCREEN_MULTIPLIER = 0.5;
+export const CHUNKS_COUNT = 200;
+export const INITIAL_PLANETS_COUNT = 2000;
 
 export const MIN_PLANET_RADIUS = 1;
 export const MAX_PLANET_RADIUS = 10;
